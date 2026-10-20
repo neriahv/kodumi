@@ -6,10 +6,6 @@ A playful developer workshop for investigating bugs, reviewing patches, and chec
 
 **A runnable, single-user local application. Zero npm dependencies. No API key needed to try it.**
 
-![Kodumi brand direction](docs/brand-concept.png)
-
-*Brand concept illustration, including an illustrative interface. The application implements this visual direction with original SVG characters, responsive layouts, and light/dark themes.*
-
 ## Start locally
 
 Install **Node.js 22.9 or newer** and extract or clone this repository. In a terminal inside the `kodumi` directory:

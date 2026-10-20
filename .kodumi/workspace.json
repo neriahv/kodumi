@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "repositories": [
+    {
+      "id": "lab-login",
+      "name": "Launchpad",
+      "slug": "kodumi/launchpad",
+      "language": "JavaScript",
+      "summary": "A tiny authentication module with a whitespace validation bug.",
+      "kind": "lab",
+      "files": [
+        {
+          "path": "src/auth/validate.mjs",
+          "content": "export function validateLogin(email, password) {\n  if (!email || !password) {\n    return { valid: false, error: 'Email and password are required' };\n  }\n  return { valid: true };\n}\n",
+          "language": "javascript"
+        },
+        {
+          "path": "regression.test.mjs",
+          "content": "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { validateLogin } from './src/auth/validate.mjs';\ntest('accepts valid credentials', () => assert.equal(validateLogin('reader@example.com', 'secret123').valid, true));\ntest('rejects empty email', () => assert.equal(validateLogin('', 'secret123').valid, false));\ntest('rejects whitespace-only email', () => assert.equal(validateLogin('   ', 'secret123').valid, false));\ntest('rejects whitespace-only password', () => assert.equal(validateLogin('reader@example.com', '   ').valid, false));\ntest('rejects non-string credentials', () => assert.equal(validateLogin(123, ['secret']).valid, false));\ntest('preserves error contract', () => assert.deepEqual(validateLogin('', ''), { valid: false, error: 'Email and password are required' }));\n",
+          "language": "javascript"
+        },
+        {
+          "path": "README.md",
+          "content": "# Launchpad\nA curated Kodumi debugging lab. This repository is bundled locally, not connected to GitHub.\n",
+          "language": "markdown"
+        }
+      ],
+      "createdAt": "2026-10-20T13:52:44.187Z"
+    },
+    {
+      "id": "lab-pagination",
+      "name": "Pagecraft",
+      "slug": "kodumi/pagecraft",
+      "language": "JavaScript",
+      "summary": "A pagination utility with an off-by-one error.",
+      "kind": "lab",
+      "files": [
+        {
+          "path": "src/paginate.mjs",
+          "content": "export function paginate(items, page = 1, pageSize = 3) {\n  const start = page * pageSize;\n  return items.slice(start, start + pageSize);\n}\n",
+          "language": "javascript"
+        },
+        {
+          "path": "regression.test.mjs",
+          "content": "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { paginate } from './src/paginate.mjs';\ntest('returns the first page', () => assert.deepEqual(paginate([1,2,3,4,5,6]), [1,2,3]));\ntest('returns the second page', () => assert.deepEqual(paginate([1,2,3,4,5,6], 2), [4,5,6]));\ntest('handles empty collections', () => assert.deepEqual(paginate([]), []));\ntest('handles pages beyond the collection', () => assert.deepEqual(paginate([1,2], 4), []));\ntest('rejects zero page', () => assert.throws(() => paginate([1], 0), RangeError));\ntest('rejects invalid page sizes', () => assert.throws(() => paginate([1], 1, 0), RangeError));\ntest('rejects fractional pages', () => assert.throws(() => paginate([1], 1.5), RangeError));\n",
+          "language": "javascript"
+        },
+        {
+          "path": "README.md",
+          "content": "# Pagecraft\nA curated Kodumi pagination debugging lab.\n",
+          "language": "markdown"
+        }
+      ],
+      "createdAt": "2026-10-20T13:52:44.188Z"
+    },
+    {
+      "id": "lab-cart",
+      "name": "Tinycart",
+      "slug": "kodumi/tinycart",
+      "language": "JavaScript",
+      "summary": "A shopping cart that ignores item quantities.",
+      "kind": "lab",
+      "files": [
+        {
+          "path": "src/cart.mjs",
+          "content": "export function cartTotal(items) {\n  return items.reduce((total, item) => total + item.price, 0);\n}\n",
+          "language": "javascript"
+        },
+        {
+          "path": "regression.test.mjs",
+          "content": "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { cartTotal } from './src/cart.mjs';\ntest('includes item quantities', () => assert.equal(cartTotal([{price:12.5,quantity:3}]), 37.5));\ntest('sums multiple lines', () => assert.equal(cartTotal([{price:10,quantity:2},{price:5,quantity:3}]), 35));\ntest('handles an empty cart', () => assert.equal(cartTotal([]), 0));\ntest('avoids decimal addition artifacts', () => assert.equal(cartTotal([{price:0.1,quantity:1},{price:0.2,quantity:1}]), 0.3));\ntest('handles zero quantities', () => assert.equal(cartTotal([{price:20,quantity:0}]), 0));\n",
+          "language": "javascript"
+        },
+        {
+          "path": "README.md",
+          "content": "# Tinycart\nA curated Kodumi cart debugging lab.\n",
+          "language": "markdown"
+        }
+      ],
+      "createdAt": "2026-10-20T13:52:44.188Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "4033eccf-dd22-418c-b5fc-b99eea29ff98",
+      "repositoryId": "lab-login",
+      "title": "Reject whitespace-only login credentials",
+      "description": "Users can submit a login form with spaces in the email or password. Reject blank and non-string credentials while preserving valid logins.",
+      "mode": "lab",
+      "status": "review",
+      "stage": "review",
+      "createdAt": "2026-10-20T13:55:52.185Z",
+      "events": [
+        {
+          "at": "2026-10-20T13:55:52.252Z",
+          "actor": "scout",
+          "message": "Reading 3 bundled files in kodumi/launchpad.",
+          "type": "info"
+        },
+        {
+          "at": "2026-10-20T13:55:52.637Z",
+          "actor": "scout",
+          "message": "Reproduced the bug: 3 of 6 regression checks fail.",
+          "type": "warning"
+        },
+        {
+          "at": "2026-10-20T13:55:52.638Z",
+          "actor": "atlas",
+          "message": "Preparing the lab’s documented repair plan.",
+          "type": "info"
+        },
+        {
+          "at": "2026-10-20T13:55:52.640Z",
+          "actor": "atlas",
+          "message": "Prepared 3 implementation steps.",
+          "type": "info"
+        },
+        {
+          "at": "2026-10-20T13:55:52.871Z",
+          "actor": "forge",
+          "message": "Prepared a patch for 1 file. Repository originals remain intact.",
+          "type": "info"
+        },
+        {
+          "at": "2026-10-20T13:55:53.098Z",
+          "actor": "pixel",
+          "message": "Checking the proposed change against available validation.",
+          "type": "info"
+        },
+        {
+          "at": "2026-10-20T13:55:53.214Z",
+          "actor": "pixel",
+          "message": "6/6 regression checks passed.",
+          "type": "success"
+        },
+        {
+          "at": "2026-10-20T13:55:53.216Z",
+          "actor": "system",
+          "message": "Your proposal is ready. Review the diff, evidence, and validation before accepting.",
+          "type": "success"
+        }
+      ],
+      "plan": [
+        "Check that both credentials are strings.",
+        "Reject credentials that become empty after trimming.",
+        "Preserve the existing error shape and valid-login behavior."
+      ],
+      "changes": [
+        {
+          "path": "src/auth/validate.mjs",
+          "before": "export function validateLogin(email, password) {\n  if (!email || !password) {\n    return { valid: false, error: 'Email and password are required' };\n  }\n  return { valid: true };\n}\n",
+          "after": "export function validateLogin(email, password) {\n  if (typeof email !== 'string' || typeof password !== 'string' ||\n      !email.trim() || !password.trim()) {\n    return { valid: false, error: 'Email and password are required' };\n  }\n  return { valid: true };\n}\n"
+        }
+      ],
+      "evidence": [
+        {
+          "path": "src/auth/validate.mjs",
+          "line": 2,
+          "text": "The truthiness check accepts non-empty strings containing only spaces."
+        }
+      ],
+      "baseline": {
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "cases": [
+          {
+            "name": "accepts valid credentials",
+            "passed": true
+          },
+          {
+            "name": "rejects empty email",
+            "passed": true
+          },
+          {
+            "name": "rejects whitespace-only email",
+            "passed": false
+          },
+          {
+            "name": "rejects whitespace-only password",
+            "passed": false
+          },
+          {
+            "name": "rejects non-string credentials",
+            "passed": false
+          },
+          {
+            "name": "preserves error contract",
+            "passed": true
+          }
+        ],
+        "success": false,
+        "output": "TAP version 13\n# Subtest: accepts valid credentials\nok 1 - accepts valid credentials\n  ---\n  duration_ms: 0.8953\n  type: 'test'\n  ...\n# Subtest: rejects empty email\nok 2 - rejects empty email\n  ---\n  duration_ms: 0.1138\n  type: 'test'\n  ...\n# Subtest: rejects whitespace-only email\nnot ok 3 - rejects whitespace-only email\n  ---\n  duration_ms: 0.6416\n  type: 'test'\n  location: 'C:\\\\Users\\\\Neriah\\\\AppData\\\\Local\\\\Temp\\\\kodumi-MfAqfA\\\\regression.test.mjs:6:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    \n    true !== false\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: false\n  actual: true\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///C:/Users/Neriah/AppData/Local/Temp/kodumi-MfAqfA/regression.test.mjs:6:52)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n    Test.postRun (node:internal/test_runner/test:1330:19)\n    Test.run (node:internal/test_runner/test:1258:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)\n  ...\n# Subtest: rejects whitespace-only password\nnot ok 4 - rejects whitespace-only password\n  ---\n  duration_ms: 0.17\n  type: 'test'\n  location: 'C:\\\\Users\\\\Neriah\\\\AppData\\\\Local\\\\Temp\\\\kodumi-MfAqfA\\\\regression.test.mjs:7:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    \n    true !== false\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: false\n  actual: true\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///C:/Users/Neriah/AppData/Local/Temp/kodumi-MfAqfA/regression.test.mjs:7:55)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n    Test.postRun (node:internal/test_runner/test:1330:19)\n    Test.run (node:internal/test_runner/test:1258:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)\n  ...\n# Subtest: rejects non-string credentials\nnot ok 5 - rejects non-string credentials\n  ---\n  duration_ms: 1.4135\n  type: 'test'\n  location: 'C:\\\\Users\\\\Neriah\\\\AppData\\\\Local\\\\Temp\\\\kodumi-MfAqfA\\\\regression.test.mjs:8:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    \n    true !== false\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: false\n  actual: true\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///C:/Users/Neriah/AppData/Local/Temp/kodumi-MfAqfA/regression.test.mjs:8:53)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1201:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n    Test.postRun (node:internal/test_runner/test:1330:19)\n    Test.run (node:internal/test_runner/test:1258:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)\n  ...\n# Subtest: preserves error contract\nok 6 - preserves error contract\n  ---\n  duration_ms: 2.3859\n  type: 'test'\n  ...\n1..6\n# tests 6\n# suites 0\n# pass 3\n# fail 3\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 97.4327\n",
+        "timedOut": false
+      },
+      "validation": {
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "cases": [
+          {
+            "name": "accepts valid credentials",
+            "passed": true
+          },
+          {
+            "name": "rejects empty email",
+            "passed": true
+          },
+          {
+            "name": "rejects whitespace-only email",
+            "passed": true
+          },
+          {
+            "name": "rejects whitespace-only password",
+            "passed": true
+          },
+          {
+            "name": "rejects non-string credentials",
+            "passed": true
+          },
+          {
+            "name": "preserves error contract",
+            "passed": true
+          }
+        ],
+        "success": true,
+        "output": "TAP version 13\n# Subtest: accepts valid credentials\nok 1 - accepts valid credentials\n  ---\n  duration_ms: 0.5106\n  type: 'test'\n  ...\n# Subtest: rejects empty email\nok 2 - rejects empty email\n  ---\n  duration_ms: 0.0916\n  type: 'test'\n  ...\n# Subtest: rejects whitespace-only email\nok 3 - rejects whitespace-only email\n  ---\n  duration_ms: 0.0615\n  type: 'test'\n  ...\n# Subtest: rejects whitespace-only password\nok 4 - rejects whitespace-only password\n  ---\n  duration_ms: 0.053\n  type: 'test'\n  ...\n# Subtest: rejects non-string credentials\nok 5 - rejects non-string credentials\n  ---\n  duration_ms: 0.6876\n  type: 'test'\n  ...\n# Subtest: preserves error contract\nok 6 - preserves error contract\n  ---\n  duration_ms: 0.5089\n  type: 'test'\n  ...\n1..6\n# tests 6\n# suites 0\n# pass 6\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 66.9895\n",
+        "timedOut": false,
+        "kind": "executed"
+      },
+      "summary": "The truthiness check accepts non-empty strings containing only spaces. This guided lab uses a bundled repair, not an LLM response.",
+      "approvedAt": null,
+      "pr": null,
+      "error": null,
+      "usage": null,
+      "startedAt": "2026-10-20T13:55:52.250Z",
+      "finishedAt": "2026-10-20T13:55:53.216Z"
+    }
+  ],
+  "settings": {
+    "theme": "dark",
+    "reduceMotion": false
+  }
+}

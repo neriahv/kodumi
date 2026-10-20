@@ -1,6 +1,6 @@
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { dirname, resolve, extname, join } from 'node:path';
+import { dirname, resolve, extname, join, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { Store } from './lib/store.mjs';
@@ -83,7 +83,7 @@ export async function createApp(options={}){
       }
       check(method==='GET'||method==='HEAD','Method not allowed.',405);
       const relative=path==='/'?'index.html':path.slice(1);
-      const filename=resolve(root,'public',relative);check(filename.startsWith(resolve(root,'public')+'/'),'File not found.',404);
+      const filename=resolve(root,'public',relative);check(filename.startsWith(resolve(root,'public')+sep),'File not found.',404);
       let bytes;try{check((await stat(filename)).isFile(),'File not found.',404);bytes=await readFile(filename);}catch{throw new HttpError(404,'File not found.');}
       res.writeHead(200,{'content-type':mime[extname(filename)]||'application/octet-stream'});res.end(method==='HEAD'?undefined:bytes);
     }catch(e){if(!res.headersSent)json({error:e.status?e.message:'The server could not complete this request.'},e.status||500);else res.end();}
